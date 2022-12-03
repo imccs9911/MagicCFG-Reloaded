@@ -3,20 +3,30 @@
 
 name: Swift
 
+name: Run Makefile
+
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
+  pull_request:
+
+  workflow_dispatch:
+    
 jobs:
   build:
-
     runs-on: macos-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: swift test -v
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: brew install ldid
+
+      - name: Compile
+        run: make
+      
+      - name: Upload IPA
+        uses: actions/upload-artifact@v3
+        with:
+          name: magiccfg
+          path: packages/magiccfg.ipa
